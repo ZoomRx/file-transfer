@@ -5,5 +5,7 @@ declare module '@capacitor/core' {
 }
 
 export interface FileTransferPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+  download(data: { src: string, destination: string, objectId: String, options:object}): Promise<void>;
+  upload(data: { src: string, destination: string, objectId: String, options:object}): Promise<void>;
+  abort(data: {objectId: String}): Promise<void>;
 }

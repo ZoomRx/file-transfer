@@ -9,9 +9,16 @@ export class FileTransferWeb extends WebPlugin implements FileTransferPlugin {
     });
   }
 
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  async download(_data: { src: string, destination: string, objectId: String, options:object}): Promise<void> {
+    return new Promise((_resolve, reject) => reject);
+  }
+
+  async upload(_data: { src: string, destination: string, objectId: String, options:object}): Promise<void> {
+    return new Promise((_resolve, reject) => reject);
+  }
+
+  async abort(_data: {objectId: String}): Promise<void> {
+    return new Promise((_resolve, reject) => reject);
   }
 }
 
