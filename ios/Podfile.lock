@@ -1,11 +1,17 @@
 PODS:
+  - Alamofire (5.4.1)
   - Capacitor (2.4.5):
     - CapacitorCordova
   - CapacitorCordova (2.4.5)
 
 DEPENDENCIES:
+  - Alamofire (~> 5.2)
   - "Capacitor (from `../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../node_modules/@capacitor/ios`)"
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -14,9 +20,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@capacitor/ios"
 
 SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   Capacitor: 16fff19464a7d37e2f996e0994749b04111ed3f0
   CapacitorCordova: 4f552a757626d236959fd79e970b6b6a26efb859
 
-PODFILE CHECKSUM: e66d6fa04b0daaf06d8498d39637adf77139c716
+PODFILE CHECKSUM: 9c6abb002dc4ba2396656534dd06d5220617cced
 
 COCOAPODS: 1.9.3
