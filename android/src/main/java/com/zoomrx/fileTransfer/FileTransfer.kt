@@ -19,26 +19,33 @@ class FileTransfer : Plugin() {
         val headers = options.optJSONObject("headers")
         val backgroundMode = options.optBoolean("background")
 
-        val downloadContext = DownloadContext(source, destination, headers,
-                {bytesRead: Long, totalBytes: Long ->
-                    val ret = JSObject()
-                    ret.put("id", jsTransferId)
-                    ret.put("bytesRead", bytesRead)
-                    ret.put("totalBytes", totalBytes)
-                    notifyListeners("download", ret)
-                },
-                {response ->
-                    call.resolve(JSObject.fromJSONObject(response))
-                },
-                {error ->
-                    call.reject(error.getString("message"), error.getInt("code").toString())
-                },
-                backgroundMode
-        )
+        val downloadContext: DownloadContext? = try {
+             DownloadContext(source, destination, headers,
+                    {bytesRead: Long, totalBytes: Long ->
+                        val ret = JSObject()
+                        ret.put("id", jsTransferId)
+                        ret.put("bytesRead", bytesRead)
+                        ret.put("totalBytes", totalBytes)
+                        notifyListeners("download", ret)
+                    },
+                    {response ->
+                        call.resolve(JSObject.fromJSONObject(response))
+                    },
+                    {error ->
+                        call.reject(error.getString("message"), error.getInt("code").toString())
+                    },
+                    backgroundMode
+            )
 
-        FileTransferHandler.startDownload(downloadContext).let { nativeTransferId ->
-            if (nativeTransferId != -1)
-                transferIdMap[jsTransferId] = nativeTransferId
+        } catch (exception: Exception) {
+            call.reject(exception.message, FileTransferHandler.ErrorCode.INSUFFICIENT_DATA.toString())
+            null
+        }
+        if (downloadContext != null) {
+            FileTransferHandler.startDownload(downloadContext).let { nativeTransferId ->
+                if (nativeTransferId != -1)
+                    transferIdMap[jsTransferId] = nativeTransferId
+            }
         }
     }
 
@@ -55,30 +62,37 @@ class FileTransfer : Plugin() {
         val fileName = options.optString("fileName", "image.png")
         val mimeType = options.optString("mimeType", "image/png")
 
-        val uploadContext = UploadContext(source, destination, headers,
-                {bytesRead: Long, totalBytes: Long ->
-                    val ret = JSObject()
-                    ret.put("id", jsTransferId)
-                    ret.put("bytesRead", bytesRead)
-                    ret.put("totalBytes", totalBytes)
-                    notifyListeners("download", ret)
-                },
-                {response ->
-                    call.resolve(JSObject.fromJSONObject(response))
-                },
-                {error ->
-                    call.reject(error.getString("message"), error.getInt("code").toString())
-                },
-                backgroundMode,
-                fileKey,
-                fileName,
-                mimeType
-        )
-
-        FileTransferHandler.startUpload(uploadContext).let { nativeTransferId ->
-            if (nativeTransferId != -1)
-                transferIdMap[jsTransferId] = nativeTransferId
+        val uploadContext: UploadContext? = try {
+             UploadContext(source, destination, headers,
+                    {bytesRead: Long, totalBytes: Long ->
+                        val ret = JSObject()
+                        ret.put("id", jsTransferId)
+                        ret.put("bytesRead", bytesRead)
+                        ret.put("totalBytes", totalBytes)
+                        notifyListeners("download", ret)
+                    },
+                    {response ->
+                        call.resolve(JSObject.fromJSONObject(response))
+                    },
+                    {error ->
+                        call.reject(error.getString("message"), error.getInt("code").toString())
+                    },
+                    backgroundMode,
+                    fileKey,
+                    fileName,
+                    mimeType
+            )
+        } catch (exception: Exception) {
+            call.reject(exception.message, FileTransferHandler.ErrorCode.INSUFFICIENT_DATA.toString())
+            null
         }
+        if (uploadContext != null) {
+            FileTransferHandler.startUpload(uploadContext).let { nativeTransferId ->
+                if (nativeTransferId != -1)
+                    transferIdMap[jsTransferId] = nativeTransferId
+            }
+        }
+
     }
 
     @PluginMethod
