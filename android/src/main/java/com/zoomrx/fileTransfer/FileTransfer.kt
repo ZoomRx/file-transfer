@@ -12,10 +12,13 @@ class FileTransfer : Plugin() {
     @PluginMethod
     fun download(call: PluginCall) {
         val source = call.getString("src")
-        val destination = call.getString("destination")
+        var destination = call.getString("destination")
         val jsTransferId = call.getString("objectId")
         val options = call.getObject("options")
 
+        if (destination.startsWith("file://")) {
+            destination = destination.substringAfter("file://")
+        }
         val headers = options.optJSONObject("headers")
         val backgroundMode = options.optBoolean("background")
 
@@ -51,10 +54,14 @@ class FileTransfer : Plugin() {
 
     @PluginMethod
     fun upload(call: PluginCall) {
-        val source = call.getString("src")
+        var source = call.getString("src")
         val destination = call.getString("destination")
         val jsTransferId = call.getString("objectId")
         val options = call.getObject("options")
+
+        if (source.startsWith("file://")) {
+            source = source.substringAfter("file://")
+        }
 
         val headers = options.optJSONObject("headers")
         val backgroundMode = options.optBoolean("background")
